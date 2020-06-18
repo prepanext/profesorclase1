@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Lightbox</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  <style id="compiled-css" type="text/css">
+
+body {
+ color: #fff;
+ font-family: arial;
+ margin:0px;
+ padding:0px;
+ overflow:hidden}
+ 
+textarea{
+background-color:rgba(255, 255, 255, 0.9);
+border-radius: 10px;
+border: 8px solid #141414;
+resize: none;
+outline : 0;
+-moz-outline : 0;
+
+}
+
+  html, body, div, iframe { margin:0; padding:0; height:100%; }
+  iframe { display:block; width:100%; border:none; }
+	
+
+button {
+  padding: 8px;
+  width: 200px;
+  background: #d9d9d9;
+  color: #555;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 8px;
+  outline : 0;
+  font-weight: bold;
+}
+
+#lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.6;
+    text-align: center;
+    display: none;
+	justify-content: center;
+
+}  
+
+#lb-content {
+    color: #fff;
+    height: 200px;
+    width: 250px;
+    border: 12px solid rgba(20, 20, 20, 0.6);
+    background-color:rgba(20, 20, 20, 0.9);
+    position: fixed;
+    text-align: center;
+	padding: 10px;
+    border-radius: 20px;
+    display: none;
+	overflow: hidden;
+
+	
+}
+#lb-close {
+    display: none;
+    height: 22px;
+    width: 25px;
+    background-color: red;
+    color: #fff;
+    position: absolute;
+    top: -25px;
+    right: -25px; 
+    cursor: pointer;
+    text-align: center;   
+    border-radius: 10px;    
+}
+    /* EOS */
+  </style>
+
+<script id="insert"></script>
+
+
+    <script>
+      const customConsole = (w) => {
+        const pushToConsole = (payload, type) => {
+          w.parent.postMessage({
+            console: {
+              payload: payload,
+              type:    type
+            }
+          }, "*")
+        }
+
+        w.onerror = (message, url, line, column) => {
+          // the line needs to correspond with the editor panel
+          // unfortunately this number needs to be altered every time this view is changed
+          line = line - 70
+          if (line < 0){
+            pushToConsole(message, "error")
+          } else {
+            pushToConsole(`[${line}:${column}] ${message}`, "error")
+          }
+        }
+
+        let console = (function(systemConsole){
+          return {
+            log: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "log")
+              systemConsole.log.apply(this, args)
+            },
+            info: function(){
+              let args = Array.from(arguments)
+
+              pushToConsole(args, "info")
+              systemConsole.info.apply(this, args)
+            },
+            warn: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "warn")
+              systemConsole.warn.apply(this, args)
+            },
+            error: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "error")
+              systemConsole.error.apply(this, args)
+            },
+            system: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "system")
+            }
+          }
+        }(window.console))
+
+        window.console = console
+
+        console.system("Running fiddle")
+      }
+
+      if (window.parent){
+        customConsole(window)
+      }
+    </script>
+</head>
+<body>
+<script src='https://meet.jit.si/external_api.js'></script>
+<div id="lightbox"></div>
+<div id="lb-content">
+<span id="lb-close">x</span>
+<p><strong>IMPORTANTE</p> 
+<p style="text-align: justify;">Copia el reglamento de clase y pegalo en el chat general, despues de pegarlo presiona 
+enter para enviarlo a todos los alumnos.</strong></p>
+
+<button class="btn" onclick="setTimeout($(ocultar), 2000);" data-clipboard-text=
+"
+REGLAMENTO DE CLASE.
+REGLA 1
+Recuerda que los mensajes en el aula son leídos por todos. Sé siempre respetuoso y cortés.
+REGLA 2
+Adhiere, en línea, a las mismas reglas de comportamiento que sigues en la vida real.
+ REGLA 3
+Considera que escribir todo en mayúsculas es como gritar y, además, dificulta la lectura. 
+REGLA 4
+Comparte tu conocimiento
+REGLA 5
+Utiliza el correo interno y mensajería del aula para cuestiones personales y los demás espacios para las cuestiones académicas.
+REGLA 6
+Ayuda a mantener los debates en un ambiente sano y educativo.
+REGLA 7
+Respeta la privacidad de terceras personas.
+REGLA 8
+Con respecto a los espacios de intercambio:
+-	Lee todas las intervenciones de tus compañeros y del docente antes de participar.
+-	Escribe textos cortos.
+-	Verifica ortografía y claridad en la redacción antes de publicar.
+-	Si está a tu alcance, colabora ante las consultas de tus compañeros.
+REGLA 9
+Ingresa periódicamente al aula y realiza las actividades de instancia virtual en tiempo y forma. 
+REGLA 10
+Ante una dificultad en la cursada o en el manejo del entorno virtual, no te desanimes ¡Solicita ayuda!
+"
+>
+Copiar reglamento
+</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+
+<script type="text/javascript">//<![CDATA[
+
+
+var lightBox = $('#lightbox'),
+    lightBoxContent = $('#lb-content');
+
+var positionLightbox = function() {
+    var veiwWidth = $(window).width(),
+        lbContentMargin = (veiwWidth / 2) - 148,
+        lbContent = $('#lb-content');
+
+    lbContent.css({
+        'left' : lbContentMargin,
+        'top' : $(window).scrollTop() + 50 + 'px'
+    });
+};
+
+inicial = function() {
+    lightBox.fadeIn(function() {
+        lightBoxContent.show();                               
+    });
+    positionLightbox();
+};
+
+ocultar = function() {
+    lightBox.hide();
+    lightBoxContent.hide();
+};
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "6TNrw"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+    <script>
+      let allLines = []
+
+      window.addEventListener("message", (message) => {
+        if (message.data.console){
+          let insert = document.querySelector("#insert")
+          allLines.push(message.data.console.payload)
+          insert.innerHTML = allLines.join(";\r")
+
+          let result = eval.call(null, message.data.console.payload)
+          if (result !== undefined){
+            console.log(result)
+          }
+        }
+      });
+    </script>
+	
+	<script>
+    var clipboard = new ClipboardJS('.btn');
+
+    clipboard.on('success', function(e) {
+        console.log(e);
+    });
+
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });
+    </script>
+	
+	
+	<script>
+    var domain = "meet.jit.si";
+            var options = {
+                roomName: "Prepanext",
+                parentNode: undefined,
+                configOverwrite: { 
+	  defaultLanguage: "es",
+      startWithVideoMuted: true,	
+      startWithAudioMuted: true },
+	  interfaceConfigOverwrite: {
+	  DEFAULT_LOCAL_DISPLAY_NAME: 'yo',
+	  DEFAULT_REMOTE_DISPLAY_NAME: '',
+	  SHOW_CHROME_EXTENSION_BANNER: false,
+	  SHOW_JITSI_WATERMARK: false,
+	  SHOW_WATERMARK_FOR_GUESTS: false,},
+            }
+            var api = new JitsiMeetExternalAPI(domain, options);
+	api.on('participantKickedOut', (kicked) => {
+	kicked2 = kicked ["kicked"];
+	if ((kicked2 ["local"]) == true) {
+	exp = "si";
+	api.removeEventListener('participantLeft');
+    window.AppInventor.setWebViewString("expulsado")};
+	    });
+	api.on('readyToClose', () => {
+	cierra = "ya";
+	api.removeEventListener('participantLeft');
+	window.AppInventor.setWebViewString("cerrar");
+        });		
+	api.on('participantJoined', () => {
+	var num = (Math.floor(Math.random() * 1000));
+	api.executeCommand('displayName', "Profesor Next" + " " + num);
+        });		
+	api.on('videoConferenceJoined', () => {
+    $ (inicial)
+        });	
+		
+    api.on('outgoingMessage', (mens) => {
+	var mensaje = mens ["message"]
+    if (mensaje.indexOf("REGLAMENTO DE CLASE") > -1) {
+    api.removeEventListener('participantJoined');
+	};
+        });	
+  </script>
+
+</body>
+</html>
