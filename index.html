@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+body {
+  background: ##000000;
+  background-image: url("https://i.imgur.com/rOlAXgV.png"), url("https://i.imgur.com/VQ9QAXN.png");
+  background-attachment: fixed;
+  background-repeat: repeat-x, repeat;
+  font-family: calibri;
+  margin: 0;
+  min-width: 700px;
+  outline : 0;
+}
+
+/* Include the padding and border in an element's total width and height */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove margins and padding from the list */
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the list items */
+ul li {
+  overflow: hidden
+  cursor: pointer;
+  position: relative;
+  padding: 7px 8px 7px 8px;
+  list-style-type: none;
+  background: #eee;
+  font-size: 18px;
+  transition: 0.2s;
+  font-weight: bold;
+  
+  /* make the list items unselectable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+ul li:nth-child(odd) {
+  background: #f9f9f9;
+}
+/* Darker background-color on hover */
+ul li:hover {
+  background: #ddd;
+}
+
+/* Style the close button */
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 7px 16px 7px 16px;
+  background: #414141;
+  color: white;
+}
+
+.close:hover {
+  background-color: #78f2d6;
+  color: white;
+}
+
+/* Style the header */
+.header {
+  background-color:rgba(120, 242, 214, 0.1);
+  padding: 10px 50px;
+  color: white;
+  text-align: center;
+}
+
+/* Clear floats after the header */
+.header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the input */
+input {
+  margin-right: -12px;
+  border: none;
+  border-radius: 8px;
+  width: 75%;
+  padding: 10px;
+  padding-right: 22px;
+  float: left;
+  font-size: 16px;
+  outline : 0;
+}
+
+/* Style the "Add" button */
+.addBtn {
+  padding: 8px;
+  width: 25%;
+  background: #d9d9d9;
+  color: #555;
+  float: left;
+  text-align: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 8px;
+  outline : 0;
+  font-weight: bold;
+}
+
+.addBtn:hover {
+  background-color: #bbb;
+}
+.wrapper {
+  position: relative;
+  height: 40px;
+  width:100%;
+  bottom: -5px;
+  overflow: hidden;
+}
+button {
+  margin:auto;
+  display:block;
+  padding: 8px;
+  width: 130px;
+  background-color:rgba(3, 244, 214, 0.8);
+  color: white;
+  text-align: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 8px;
+  outline : 0;
+
+}
+.contenedor {
+  margin:auto;
+  display:block;
+  padding: 10px;
+  width: 700px;
+  background-color:rgba(20, 20, 20, 0.6);
+  color: #555;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 8px;
+  margin-top: 4.5%;
+  overflow: hidden
+
+}
+
+
+</style>
+</head>
+<body>
+
+
+<div id="todo" class="contenedor">
+<div id="myDIV" class="header">
+  <img src="https://i.imgur.com/frNWswU.png" width="100" height="100">
+  <p>
+  <h2 style="margin:0px">Antes de iniciar agrega los temas que se impartir&aacute;n hoy.  </h2></p>
+  <input type="text" id="myInput" placeholder="Escribe el tema aqu&iacute;...">
+  <span onclick="newElement()" class="addBtn">Agregar</span>
+</div>
+
+<ul id="tem">
+</ul>
+<div class="wrapper">
+
+<img  id="loading" style="margin: -120px -0px -115px -0px; display: none;" src="https://i.imgur.com/hWzlzjM.gif" title="source: imgur.com" id="loading"/>
+
+<button id="enviar" ><strong>Iniciar clase</strong</button>
+</div>
+</div>
+
+
+<script>
+// Create a "close" button and append it to each list item
+var myNodelist = document.getElementsByTagName("LI");
+var i;
+for (i = 0; i < myNodelist.length; i++) {
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  myNodelist[i].appendChild(span);
+}
+
+// Click on a close button to hide the current list item
+var close = document.getElementsByClassName("close");
+var i;
+for (i = 0; i < close.length; i++) {
+  close[i].onclick = function() {
+    var div = this.parentElement;
+    div.style.display = "none";
+  }
+}
+
+// Create a new list item when clicking on the "Add" button
+function newElement() {
+  var li = document.createElement("li");
+  var inputValue = document.getElementById("myInput").value.toUpperCase();
+  var t = document.createTextNode(inputValue);
+  li.appendChild(t);
+   if ( $('#tem li').length === 6 ) {
+  alert("Solo puedes agregar 6 temas!");
+  }
+  if (inputValue === '') {
+    alert("Tienes que escrbir el tema!");
+  } 
+  else {
+    document.getElementById("tem").appendChild(li);
+	$('#tem li:gt(5)').remove();
+  }
+  document.getElementById("myInput").value = "";
+
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  for (i = 0; i < close.length; i++) {
+    close[i].onclick = function() {
+      var div = this.parentElement;
+      div.style.display = "none";
+      div.parentNode.removeChild(div);
+    }
+  }
+}
+</script>
+
+<script>
+  $("#enviar").click(function(){
+var vacio = $('#tem').text()
+if (vacio.length > "1") {
+var tom = $('#tem').text().split("\u00D7").slice(0, -1);
+var urlactiva = "https://docs.google.com/forms/d/e/1FAIpQLSdwzHN504ZgttsDV1yp6X5oYPcNjPoopgcVMAKXOkbbqkyrdw/formResponse?entry.519346264=1&entry.1319047518=ÑOÁ&entry.222791075="+tom+"&entry.1340703982=UPDATE";
+$.post(urlactiva,{},
+    function(data,status){}); 
+setTimeout("location.href='http://www.google.com'", 5000);
+document.getElementById('enviar').style.display = "none";
+document.getElementById('loading').style.display = "inline";
+  } else {
+   alert("Debes agregar al menos un tema!");
+}
+  });
+</script>
+</body>
+</html>
